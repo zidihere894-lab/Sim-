@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZIDDI SIM DATABASE | ZIDDI HACKS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #050813;       
+            --bg-card: #0f1424;       
+            --primary: #0099ff;       
+            --primary-hover: #007acc;
+            --accent: #00d4ff;        
+            --text-main: #ffffff;
+            --text-sub: #8a9bbd;      
+            --border: #1c253b;
+            --whatsapp: #25D366;
+        }
+
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #16203c 0%, var(--bg-body) 60%);
+            overflow-x: hidden;
+        }
+
+        /* --- SNOWFALL CANVAS --- */
+        #snow-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-circle {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #000, #111);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 25px rgba(0, 153, 255, 0.4);
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem; font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .title-box { text-align: center; margin-bottom: 25px; }
+        h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.7rem; margin: 0;
+            text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .subtitle { font-size: 1.3rem; font-weight: 600; color: var(--accent); margin: 5px 0; }
+        .tagline { font-size: 0.8rem; color: var(--text-sub); opacity: 0.8; }
+
+        .search-card {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        input {
+            width: 100%;
+            background: #090c17;
+            border: 1px solid #2a3450;
+            color: #fff;
+            padding: 16px;
+            font-size: 1rem;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .btn-main {
+            width: 100%;
+            background: var(--primary);
+            color: white; border: none;
+            padding: 16px; font-weight: 700;
+            border-radius: 8px; cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* --- RESULTS --- */
+        #results-area { width: 100%; margin-top: 20px; display: none; }
+        .data-card {
+            background: rgba(15, 20, 36, 0.9);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px; margin-bottom: 12px;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .dc-header { padding: 10px 15px; background: rgba(0, 153, 255, 0.1); color: var(--primary); font-size: 0.8rem; font-weight: bold; display: flex; justify-content: space-between; }
+        .dc-body { padding: 15px; }
+        .dc-row { display: flex; justify-content: space-between; border-bottom: 1px solid #1c253b; padding: 8px 0; }
+        .lbl { color: var(--text-sub); font-size: 0.75rem; text-transform: uppercase; }
+        .val { color: #fff; font-size: 0.85rem; font-weight: 600; }
+
+        .wa-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; background: #141b2d;
+            border: 1px solid #2a3450; color: #fff;
+            padding: 14px; border-radius: 12px;
+            text-decoration: none; margin-top: 20px;
+        }
+        .wa-btn i { font-size: 1.5rem; margin-right: 12px; color: var(--whatsapp); }
+
+        .loader { display: none; text-align: center; margin: 20px; color: var(--primary); font-size: 2rem; }
+    </style>
+</head>
+<body>
+
+    <canvas id="snow-canvas"></canvas>
+
+    <div class="app-container">
+        <div class="logo-circle">Z</div>
+
+        <div class="title-box">
+            <h1>ZIDDI SIM DATABASE</h1>
+            <p class="subtitle">ZIDDI HACKS</p>
+            <p class="tagline">Search Identity Professionally</p>
+        </div>
+
+        <div class="search-card">
+            <input type="number" id="target" placeholder="Enter Number (e.g 0300...)">
+            <button class="btn-main" onclick="fetchData()">FIND DATA</button>
+        </div>
+
+        <div id="loader" class="loader"><i class="fas fa-spinner fa-spin"></i></div>
+        
+        <div id="results-area"></div>
+
+        <a href="https://whatsapp.com/channel/0029Vb6Az6dFHWpzkZII9513" target="_blank" class="wa-btn">
+            <i class="fab fa-whatsapp"></i>
+            <div style="text-align: left;">
+                <div style="font-size: 0.7rem; color: var(--text-sub);">Official Updates</div>
+                <div style="font-weight: 600;">WHATSAPP CHANNEL</div>
+            </div>
+        </a>
+
+        <div style="margin-top: 30px; text-align: center; font-size: 0.8rem;">
+            <div style="color: var(--text-sub);">Powered By</div>
+            <div style="color: var(--accent); font-weight: 700; letter-spacing: 1px;">ZIDDI HACKS</div>
+        </div>
+    </div>
+
+    <script>
+        // Snowfall Logic
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let flakes = [];
+        function initSnow() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            flakes = [];
+            for(let i=0; i<100; i++) flakes.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*3+1, d: Math.random()*1});
+        }
+        function drawSnow() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "white"; ctx.beginPath();
+            flakes.forEach(f => {
+                ctx.moveTo(f.x, f.y); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+                f.y += Math.cos(f.d) + 1 + f.r/2; f.x += Math.sin(f.d) * 2;
+                if(f.y > canvas.height) { f.y = -10; f.x = Math.random()*canvas.width; }
+            });
+            ctx.fill(); requestAnimationFrame(drawSnow);
+        }
+        initSnow(); drawSnow();
+
+        // Data Fetching Logic
+        async function fetchData() {
+            const val = document.getElementById('target').value.trim();
+            const resArea = document.getElementById('results-area');
+            const loader = document.getElementById('loader');
+
+            if(!val) return alert("Number daalein!");
+
+            resArea.style.display = 'none';
+            resArea.innerHTML = '';
+            loader.style.display = 'block';
+
+            try {
+                // API Call
+                const response = await fetch(`https://sim.f-a-k.workers.dev/?q=${val}`);
+                const result = await response.json();
+
+                loader.style.display = 'none';
+
+                if (result.status === "success") {
+                    resArea.style.display = 'block';
+                    let records = Array.isArray(result.data) ? result.data : [result.data];
+                    
+                    records.forEach((data, index) => {
+                        let card = `<div class="data-card">
+                            <div class="dc-header"><span>RECORD #${index + 1}</span><span><i class="fas fa-check-circle"></i></span></div>
+                            <div class="dc-body">`;
+                        
+                        for (let key in data) {
+                            if (["response_code", "api_owner", "credit"].includes(key)) continue;
+                            card += `<div class="dc-row">
+                                <span class="lbl">${key.replace('_', ' ')}</span>
+                                <span class="val">${data[key]}</span>
+                            </div>`;
+                        }
+                        card += `</div></div>`;
+                        resArea.innerHTML += card;
+                    });
+                } else {
+                    alert("Data nahi mila!");
+                }
+            } catch (error) {
+                loader.style.display = 'none';
+                alert("Server issue ya API link kharab hai.");
+            }
+        }
+    </script>
+</body>
+  </html>
